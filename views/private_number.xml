@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="employee_private_number_custom" model="ir.ui.view">
+        <field name="name">private.number.inherited</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='div_km_home_work']"
+                   position="after">
+                <field name="private_number" widget="phone"/>
+                <!--                <field name="testing"/>-->
+            </xpath>
+        </field>
+    </record>
+</odoo>
