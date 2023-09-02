@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_wizard_for_reporting_leave" model="ir.ui.view">
+        <field name="name">print.leaves.report</field>
+        <field name="model">print.leaves.report</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form>
+                <h1 align="center">Employees Leaves Report</h1>
+                <group>
+                    <group>
+                        <field name="employee_id"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="print_leaves_report" string="Print" type="object" class="oe_highlight"/>
+<!--                    <button name="view_of_report_pivot" string="Pivot" type="object" class="oe_highlight"/>-->
+                    <button string="Cancel" class="btn btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="view_holiday_pivot_custom" model="ir.ui.view">
+        <field name="name">hr.holidays.report_pivot_employee</field>
+        <field name="model">hr.leave.type</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <pivot string="Time Off Summary" sample="1">
+<!--                <field name="employee_id" type="row"/>-->
+                <field name="name" type="col"/>
+<!--                <field name="virtual_leaves_taken" type="measure"/>-->
+<!--                <field name="max_leaves" type="measure"/>-->
+            </pivot>
+        </field>
+    </record>
+    <record id="hr_holidays.open_view_holiday_status" model="ir.actions.act_window">
+        <field name="name">Time Off Types</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hr.leave.type</field>
+        <field name="view_mode">tree,kanban,pivot,form</field>
+    </record>
+    <record id="test_model_wizard_action_for_leaves" model="ir.actions.act_window">
+        <field name="name">Leaves Report</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">print.leaves.report</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_wizard_for_reporting_leave"/>
+        <field name="target">new</field>
+    </record>
+
+    <!--    <record id="open_purchase_order_print_menu" model="ir.actions.report">-->
+    <!--        <field name="name">Open PO</field>-->
+    <!--        <field name="model">open.po</field>-->
+    <!--        <field name="report_type">xlsx</field>-->
+    <!--        <field name="report_name">transight.open_po</field>-->
+    <!--        <field name="report_file">transight.open_po</field>-->
+    <!--        <field name="print_report_name">'Purchase Order'</field>-->
+    <!--        &lt;!&ndash; <field name="binding_model_id" ref="purchase.model_purchase_order"/> &ndash;&gt;-->
+    <!--        <field name="binding_type">report</field>-->
+    <!--    </record>-->
+    <!--    <record id="open_po_view_form" model="ir.ui.view">-->
+    <!--        <field name="name">open.po.form</field>-->
+    <!--        <field name="model">open.po</field>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <form string="Open PO">-->
+    <!--                <group>-->
+    <!--                    <field name="mode" required="1"/>-->
+    <!--                </group>-->
+    <!--                <group col="4">-->
+    <!--                    <field name="purchase_order_id"-->
+    <!--                           widget="many2many_tags"-->
+    <!--                           attrs="{'invisible':[('mode','=','partnumber')]}"/>-->
+    <!--                    <field name="partnumber" attrs="{'invisible':[('mode','=','po')]}"/>-->
+    <!--                </group>-->
+    <!--                <footer>-->
+    <!--                    <button string="Print" name="action_print" type="object" class="btn-primary"/>-->
+    <!--                    <button string="Cancel" class="btn-secondary" special="cancel"/>-->
+    <!--                </footer>-->
+    <!--            </form>-->
+    <!--        </field>-->
+    <!--    </record>-->
+    <!--    <record id="action_open_po" model="ir.actions.act_window">-->
+    <!--        <field name="name">Open PO</field>-->
+    <!--        <field name="res_model">open.po</field>-->
+    <!--        <field name="view_mode">form</field>-->
+    <!--        <field name="target">new</field>-->
+    <!--    </record>-->
+    <!--    <menuitem id="menu_open_po_action" name="Open PO" parent="mrp.menu_mrp_configuration" action="action_open_po"-->
+    <!--              sequence="4"/>-->
+
+
+    <!--        <record model="ir.actions.act_window" id="custom_addon_sale_order">-->
+    <!--            <field name="name">Leaves Report</field>-->
+    <!--            <field name="res_model">print.leaves.report</field>-->
+    <!--            <field name="view_mode">form</field>-->
+    <!--        </record>-->
+    <menuitem id="employees_leaves_report" name="Employees Leaves Report"
+              parent="hr_holidays.menu_hr_holidays_report"
+              action="test_model_wizard_action_for_leaves"
+              sequence="30"/>
+</odoo>

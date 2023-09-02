@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_leave_reporting_custom,access,model_print_leaves_report,base.group_user,1,1,1,1
+access_leave_reporting_pivot_custom,access,model_leave_report_pivot,base.group_user,1,1,1,1
+

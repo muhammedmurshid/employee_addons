@@ -5,8 +5,10 @@
     'depends': ['base', 'mail', 'hr_holidays'],
     'data': [
         # 'security/groups.xml',
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'views/private_number.xml',
+        'views/leave_report.xml',
+        'views/leave_pivot_view.xml',
         # 'data/activity.xml',
 
     ],
