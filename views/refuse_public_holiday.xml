@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+<!--    <record id="action_holiday_public_custom" model="ir.actions.server">-->
+<!--        <field name="name">Public Holiday Refuse</field>-->
+<!--        <field name="model_id" ref="model_hr_leave"/>-->
+<!--        <field name="binding_model_id" ref="hr_holidays.model_hr_leave"/>-->
+<!--        <field name="binding_view_types">list</field>-->
+<!--        <field name="state">code</field>-->
+<!--        <field name="code">-->
+<!--            action = model.action_refuse_public_holiday()-->
+<!--        </field>-->
+<!--    </record>-->
+    <record id="action_time_off_holiday_public_custom" model="ir.actions.server">
+        <field name="name">Refuse Action</field>
+        <field name="model_id" ref="model_hr_leave"/>
+        <field name="binding_model_id" ref="hr_holidays.model_hr_leave"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+                records.action_refused_time_off()
+        </field>
+    </record>
+</odoo>
