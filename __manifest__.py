@@ -2,7 +2,7 @@
     'name': "Employee Addons",
     'version': "14.0.1.0",
     'sequence': "0",
-    'depends': ['base', 'mail', 'hr_holidays'],
+    'depends': ['base', 'mail', 'hr_holidays','calendar'],
     'data': [
         # 'security/groups.xml',
         'security/ir.model.access.csv',
@@ -10,6 +10,7 @@
         'views/leave_report.xml',
         'views/leave_pivot_view.xml',
         'views/public_time_off_refuse.xml',
+        'views/leaves_remove_from_calendar.xml',
         # 'views/refuse_public_holiday.xml',
         # 'data/activity.xml',
 
