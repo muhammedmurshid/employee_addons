@@ -10,6 +10,11 @@
                 <field name="private_number" widget="phone"/>
                 <!--                <field name="testing"/>-->
             </xpath>
+            <xpath expr="//field[@name='company_id']"
+                   position="after">
+                <field name="branch" required="1"/>
+                <!--                <field name="testing"/>-->
+            </xpath>
             <xpath expr="//div[@class='oe_title']" position="inside">
                 <xpath expr="//field[@name='job_title']" position="after">
                     <h2>
@@ -19,6 +24,19 @@
             </xpath>
         </field>
     </record>
+
+
+<!--    <record id="sale_test" model="ir.ui.view">-->
+<!--        <field name="name">sale.test.inherited</field>-->
+<!--        <field name="model">sale.order</field>-->
+<!--        <field name="inherit_id" ref="sale.view_order_form"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//field[@name='order_line']/tree//field[@name='product_uom_qty']" position="after">-->
+<!--                <field name="name_cust"/>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+
     <record id="hr_holidays.hr_leave_action_new_request" model="ir.actions.act_window">
         <field name="name">Dashboard</field>
         <field name="res_model">hr.leave</field>

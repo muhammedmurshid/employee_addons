@@ -2,7 +2,7 @@
     'name': "Employee Addons",
     'version': "14.0.1.0",
     'sequence': "0",
-    'depends': ['base', 'mail', 'hr_holidays','calendar'],
+    'depends': ['base', 'mail', 'hr_holidays','calendar', 'sale', 'hr_expense'],
     'data': [
         # 'security/groups.xml',
         'security/ir.model.access.csv',
