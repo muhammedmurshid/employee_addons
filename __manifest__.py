@@ -11,6 +11,7 @@
         'views/leave_pivot_view.xml',
         'views/public_time_off_refuse.xml',
         'views/leaves_remove_from_calendar.xml',
+        'data/server_action.xml',
         # 'views/refuse_public_holiday.xml',
         # 'data/activity.xml',
 
