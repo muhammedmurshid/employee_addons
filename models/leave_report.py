@@ -17,7 +17,7 @@ class HrEmployee(models.Model):
             # Add additional filters if needed
         ]).mapped('number_of_days'))
         # allocated_leaves = self.leave_allocation_field  # Replace with actual field name
-        print(allocated_leaves, 'allocated leaves')
+        # print(allocated_leaves, 'allocated leaves')
 
         return allocated_leaves
 
@@ -39,7 +39,7 @@ class HrEmployee(models.Model):
             [('employee_id', '=', self.id), ('state', '=', 'validate')])
         dicts = {}
         for rec in taken_leaves:
-            print(rec.number_of_days, 'number of days')
+            # print(rec.number_of_days, 'number of days')
             ss = self.env['hr.leave.type'].search([('id', '=', rec.holiday_status_id.id)])
             if rec.holiday_status_id.name == ss.name:
                 # if dicts.get(rec.holiday_status_id.name):
@@ -48,7 +48,7 @@ class HrEmployee(models.Model):
                 except:
                     dicts[rec.holiday_status_id.name] = 1
                 # print(len(rec.holiday_status_id))
-        print(dicts, 'dicts')
+        # print(dicts, 'dicts')
         # print(ss.name, 'holiday type')
 
         # print(ss.name, 'name')
@@ -60,13 +60,13 @@ class HrEmployee(models.Model):
             # Add additional filters if needed
         ]).mapped('number_of_days'))
         # allocated_leaves = self.leave_allocation_field  # Replace with actual field name
-        print(allocated_leaves, 'allocated leaves')
+        # print(allocated_leaves, 'allocated leaves')
 
         leaves_taken = self.env['hr.leave.type'].search([
             ('name', '=', 'Public Holiday'),
             # Add additional filters if needed
         ])
-        print(leaves_taken.get_employees_days([1, 2]), 'leaves taken')
+        # print(leaves_taken.get_employees_days([1, 2]), 'leaves taken')
 
         # remaining_leaves = allocated_leaves - taken_leaves
         # print(remaining_leaves, 'remaining leaves')
