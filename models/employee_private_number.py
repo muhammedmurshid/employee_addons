@@ -28,10 +28,11 @@ class EmployeePrivateNumber(models.Model):
 
     @api.depends('birthday')
     def _compute_calculate_age(self):
-        today = date.today()
-        if self.birthday:
-            age = today.year - self.birthday.year - ((today.month, today.day) < (self.birthday.month, self.birthday.day))
-            self.age = age
+        for i in self:
+            today = date.today()
+            if i.birthday:
+                age = today.year - i.birthday.year - ((today.month, today.day) < (i.birthday.month, i.birthday.day))
+                i.age = age
 
     def get_old_branch_to_new_branch(self):
         rec = self.env['hr.employee'].sudo().search([])
