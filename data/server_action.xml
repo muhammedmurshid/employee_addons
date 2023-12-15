@@ -7,7 +7,7 @@
             <field name="binding_model_id" ref="hr.model_hr_employee"/>
             <field name="binding_view_types">list</field>
             <field name="state">code</field>
-            <field name="code">action = records.get_old_branch_to_new_branch()</field>
+            <field name="code">action = records.old_branch_to_new_branch_employee()</field>
         </record>
         <record id="calculate_employee_current_age" model="ir.cron">
             <field name="name">Employee Current Age</field>

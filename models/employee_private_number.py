@@ -34,31 +34,39 @@ class EmployeePrivateNumber(models.Model):
                 age = today.year - i.birthday.year - ((today.month, today.day) < (i.birthday.month, i.birthday.day))
                 i.age = age
 
-    def get_old_branch_to_new_branch(self):
+    def old_branch_to_new_branch_employee(self):
         rec = self.env['hr.employee'].sudo().search([])
+        print('working')
         for record in rec:
             if record.branch:
-                if record.branch == 'Kottayam Campus':
-                    record.branch = 3
-                if record.branch == 'Corporate Office':
-                    record.branch = 1
-                if record.branch == 'Cochin Campus':
-                    record.branch = 1
-                if record.branch == 'Trivandrum Campus':
-                    record.branch = 6
-                if record.branch == 'Calicut Campus':
-                    record.branch = 4
-                if record.branch == 'Malappuram Campus':
-                    record.branch = 9
-                if record.branch == 'Palakkad Campus':
-                    record.branch = 7
 
-                if record.branch == 'Online Campus':
-                    record.branch = 10
-                if record.branch == 'Dubai Campus':
-                    record.branch = 8
-                if record.branch == 'JK Shah Classes':
-                    record.branch = 13
+                if record.branch == 'corporate_office':
+                    print(record.name, record.branch)
+                    record.update({'branch_id': 1})
+                if record.branch == 'cochin_campus':
+                    print(record.name, record.branch)
+                    record.update({'branch_id': 2})
+                if record.branch == 'malappuram_campus':
+                    print(record.name, record.branch)
+                    record.update({'branch_id': 9})
+                if record.branch == 'kottayam_campus':
+                    print(record.name, record.branch)
+                    record.update({'branch_id': 3})
+                if record.branch == 'calicut_campus':
+                    print(record.name, record.branch)
+                    record.update({'branch_id': 4})
+                if record.branch == 'trivandrum_campus':
+                    print(record.name, record.branch)
+                    record.update({'branch_id': 6})
+                if record.branch == 'palakkad_campus':
+                    print(record.name, record.branch)
+                    record.update({'branch_id': 7})
+                if record.branch == 'dubai_campus':
+                    print(record.name, record.branch)
+                    record.update({'branch_id': 8})
+                if record.branch == 'jk_shah_classes':
+                    print(record.name, record.branch)
+                    record.update({'branch_id': 13})
 
 
 class HRLeavesActionCustomization(models.Model):
