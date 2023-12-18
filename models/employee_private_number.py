@@ -7,12 +7,12 @@ class EmployeePrivateNumber(models.Model):
 
     private_number = fields.Char('Alternate Number')
     employee_id = fields.Char('Employee ID')
-    # branch = fields.Selection([('corporate_office', 'Corporate Office'), ('cochin_campus', 'Cochin Campus'),
-    #                            ('kottayam_campus', 'Kottayam Campus'), ('calicut_campus', 'Calicut Campus'),
-    #                            ('malappuram_campus', 'Malappuram Campus'), ('trivandrum_campus', 'Trivandrum Campus'),
-    #                            ('palakkad_campus', 'Palakkad Campus'), ('dubai_campus', 'Dubai Campus'),
-    #                            ('jk_shah_classes', 'JK Shah Classes')],
-    #                           string='Branch')
+    branch = fields.Selection([('corporate_office', 'Corporate Office'), ('cochin_campus', 'Cochin Campus'),
+                               ('kottayam_campus', 'Kottayam Campus'), ('calicut_campus', 'Calicut Campus'),
+                               ('malappuram_campus', 'Malappuram Campus'), ('trivandrum_campus', 'Trivandrum Campus'),
+                               ('palakkad_campus', 'Palakkad Campus'), ('dubai_campus', 'Dubai Campus'),
+                               ('jk_shah_classes', 'JK Shah Classes')],
+                              string='Branch')
     branch_id = fields.Many2one('logic.base.branches', string='Branch')
     age = fields.Integer(string='Age', readonly=True, compute="_compute_calculate_age", store=True)
 
