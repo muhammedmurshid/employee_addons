@@ -31,57 +31,58 @@ class HrEmployee(models.Model):
 
     def write(self, vals):
         res = super(HrEmployee, self).write(vals)
-        # print(type(vals['id']), 'id')
-        # Logic to calculate taken leaves from leave requests
-        # raise UserError(self.id)
+        for i in self:
+            # print(type(vals['id']), 'id')
+            # Logic to calculate taken leaves from leave requests
+            # raise UserError(self.id)
 
-        taken_leaves = self.env['hr.leave.allocation'].search(
-            [('employee_id', '=', self.id), ('state', '=', 'validate')])
-        dicts = {}
-        for rec in taken_leaves:
-            # print(rec.number_of_days, 'number of days')
-            ss = self.env['hr.leave.type'].search([('id', '=', rec.holiday_status_id.id)])
-            if rec.holiday_status_id.name == ss.name:
-                # if dicts.get(rec.holiday_status_id.name):
-                try:
-                    dicts[rec.holiday_status_id.name] += 1
-                except:
-                    dicts[rec.holiday_status_id.name] = 1
-                # print(len(rec.holiday_status_id))
-        # print(dicts, 'dicts')
-        # print(ss.name, 'holiday type')
+            taken_leaves = self.env['hr.leave.allocation'].search(
+                [('employee_id', '=', i.id), ('state', '=', 'validate')])
+            dicts = {}
+            for rec in taken_leaves:
+                # print(rec.number_of_days, 'number of days')
+                ss = self.env['hr.leave.type'].search([('id', '=', rec.holiday_status_id.id)])
+                if rec.holiday_status_id.name == ss.name:
+                    # if dicts.get(rec.holiday_status_id.name):
+                    try:
+                        dicts[rec.holiday_status_id.name] += 1
+                    except:
+                        dicts[rec.holiday_status_id.name] = 1
+                    # print(len(rec.holiday_status_id))
+            # print(dicts, 'dicts')
+            # print(ss.name, 'holiday type')
 
-        # print(ss.name, 'name')
-        # print(rec.holiday_status_id.name, 'taken leaves')
+            # print(ss.name, 'name')
+            # print(rec.holiday_status_id.name, 'taken leaves')
 
-        allocated_leaves = sum(self.env['hr.leave.allocation'].search([
-            ('employee_id', '=', self.id),
-            ('state', '=', 'validate'),
-            # Add additional filters if needed
-        ]).mapped('number_of_days'))
-        # allocated_leaves = self.leave_allocation_field  # Replace with actual field name
-        # print(allocated_leaves, 'allocated leaves')
+            allocated_leaves = sum(self.env['hr.leave.allocation'].search([
+                ('employee_id', '=', i.id),
+                ('state', '=', 'validate'),
+                # Add additional filters if needed
+            ]).mapped('number_of_days'))
+            # allocated_leaves = self.leave_allocation_field  # Replace with actual field name
+            # print(allocated_leaves, 'allocated leaves')
 
-        leaves_taken = self.env['hr.leave.type'].search([
-            ('name', '=', 'Public Holiday'),
-            # Add additional filters if needed
-        ])
-        # print(leaves_taken.get_employees_days([1, 2]), 'leaves taken')
+            leaves_taken = self.env['hr.leave.type'].search([
+                ('name', '=', 'Public Holiday'),
+                # Add additional filters if needed
+            ])
+            # print(leaves_taken.get_employees_days([1, 2]), 'leaves taken')
 
-        # remaining_leaves = allocated_leaves - taken_leaves
-        # print(remaining_leaves, 'remaining leaves')
-        # return taken_leaves
-        # raise UserError(taken_leaves)
-        # return res
+            # remaining_leaves = allocated_leaves - taken_leaves
+            # print(remaining_leaves, 'remaining leaves')
+            # return taken_leaves
+            # raise UserError(taken_leaves)
+            # return res
 
-        # @api.onchange('mobile_phone')
-        # def get_remaining_leaves(self):
-        #     allocated_leaves = self.get_allocated_leaves()
-        #     taken_leaves = self.get_taken_leaves()
-        #
-        #     remaining_leaves = allocated_leaves - taken_leaves
-        #     print(remaining_leaves, 'remaining leaves')
-        #     return remaining_leaves
+            # @api.onchange('mobile_phone')
+            # def get_remaining_leaves(self):
+            #     allocated_leaves = self.get_allocated_leaves()
+            #     taken_leaves = self.get_taken_leaves()
+            #
+            #     remaining_leaves = allocated_leaves - taken_leaves
+            #     print(remaining_leaves, 'remaining leaves')
+            #     return remaining_leaves
 
 
 class PrintLeavesReport(models.TransientModel):

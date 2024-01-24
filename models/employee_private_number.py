@@ -12,7 +12,7 @@ class EmployeePrivateNumber(models.Model):
                                ('malappuram_campus', 'Malappuram Campus'), ('trivandrum_campus', 'Trivandrum Campus'),
                                ('palakkad_campus', 'Palakkad Campus'), ('dubai_campus', 'Dubai Campus'),
                                ('jk_shah_classes', 'JK Shah Classes')],
-                              string='Branch')
+                              string='Testing Branch')
     branch_id = fields.Many2one('logic.base.branches', string='Branch')
     age = fields.Integer(string='Age', readonly=True, compute="_compute_calculate_age", store=True)
 
