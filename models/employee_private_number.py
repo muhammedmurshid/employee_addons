@@ -69,5 +69,48 @@ class EmployeePrivateNumber(models.Model):
     #                 record.update({'branch_id': 13})
 
 
-class HRLeavesActionCustomization(models.Model):
-    _inherit = 'hr.leave'
+class MonthOfBirthAddServerAction(models.Model):
+    _inherit = 'hr.employee'
+
+    def action_add_month_of_birth(self):
+        employees = self.env['hr.employee'].sudo().search([('birthday', '!=', False)])
+        for employee in employees:
+            print(employee.name, 'name')
+            if employee.birthday:
+                if employee.birthday.month == 1:
+                    print("hii")
+                    employee.birth_month = 'january'
+                elif employee.birthday.month == 2:
+                    employee.birth_month = 'february'
+                elif employee.birthday.month == 3:
+                    employee.birth_month = 'march'
+                elif employee.birthday.month == 4:
+                    print(employee.birthday.month)
+                    employee.birth_month = 'april'
+                elif employee.birthday.month == 5:
+                    print(employee.birthday.month)
+                    employee.birth_month = 'may'
+                elif employee.birthday.month == 6:
+                    print(employee.birthday.month)
+                    employee.birth_month = 'june'
+                elif employee.birthday.month == 7:
+                    print(employee.birthday.month)
+                    employee.birth_month = 'july'
+                elif employee.birthday.month == 8:
+                    print(employee.birthday.month)
+                    employee.birth_month = 'august'
+                elif employee.birthday.month == 9:
+                    print(employee.birthday.month)
+                    employee.birth_month = 'september'
+                elif employee.birthday.month == 10:
+                    print(employee.birthday.month)
+                    employee.birth_month = 'october'
+                elif employee.birthday.month == 11:
+                    print(employee.birthday.month)
+                    employee.birth_month = 'november'
+                elif employee.birthday.month == 12:
+                    print(employee.birthday.month)
+                    employee.birth_month = 'december'
+                else:
+                    print("incorrect month")
+
