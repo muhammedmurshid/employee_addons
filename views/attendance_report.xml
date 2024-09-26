@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="view_wizard_for_reporting_attendance" model="ir.ui.view">
+        <field name="name">attendance.report.employees.wizard</field>
+        <field name="model">attendance.report.employees.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Test">
+                <group class="oe_title">
+                    <field name="from_date"/>
+                    <field name="to_date"/>
+                    <field name="company_id"/>
+                </group>
+                <footer>
+                    <button name="generate_attendance_report" type="object" string="Print" class="btn-primary"/>
+                    <button string="Cancel" class="btn btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="test_model_wizard_action_for_attendance" model="ir.actions.act_window">
+        <field name="name">Attendance Report</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">attendance.report.employees.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_wizard_for_reporting_attendance"/>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="employees_attendance_report" name="Attendance Report"
+              parent="hr_holidays.menu_hr_holidays_report"
+              action="test_model_wizard_action_for_attendance"
+              sequence="30"/>
+
+</odoo>

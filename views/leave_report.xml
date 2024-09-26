@@ -98,4 +98,5 @@
               parent="hr_holidays.menu_hr_holidays_report"
               action="test_model_wizard_action_for_leaves"
               sequence="30"/>
+
 </odoo>

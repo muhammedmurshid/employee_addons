@@ -12,6 +12,7 @@
         'views/public_time_off_refuse.xml',
         'views/leaves_remove_from_calendar.xml',
         'data/server_action.xml',
+        'views/attendance_report.xml'
         # 'views/refuse_public_holiday.xml',
         # 'data/activity.xml',
 

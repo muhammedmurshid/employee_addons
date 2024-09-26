@@ -201,3 +201,4 @@ class PrintLeavesReport(models.TransientModel):
             'view_mode': 'tree,pivot,form',
             'res_model': 'leave.report.pivot',
         }
+
