@@ -42,6 +42,8 @@ class AttendanceExcelReportController(http.Controller):
         # Define some formats similar to the uploaded file's format
         header_format = workbook.add_format({'bold': True, 'align': 'center', 'bg_color': '#D9EAD3', 'border': 1})
         text_format = workbook.add_format({'align': 'center', 'border': 1})
+        wf_format = workbook.add_format({'align': 'center', 'border': 1, 'bg_color': '#5ef27a', 'font_color': 'black'})
+        sw_format = workbook.add_format({'align': 'center', 'border': 1, 'bg_color': '#f29a63', 'font_color': 'black'})
 
         # Define formats for attendance status
         absent_format = workbook.add_format({'align': 'center', 'border': 1, 'bg_color': 'red', 'font_color': 'white'})
@@ -55,8 +57,8 @@ class AttendanceExcelReportController(http.Controller):
 
         # Write headers (Date and Day)
         headers = ['DATE', 'DAY'] + [str(date.day) for date in date_range] + ['PRESENT (P)', 'HALF DAY (HD)',
-                                                                              'ABSENT (A)', 'SUNDAY WORKING (W)']
-        subheaders = ['SL NO.', 'NAME'] + [date.strftime('%a').upper() for date in date_range] + ['P', 'HD', 'A', 'W']
+                                                                              'ABSENT (A)', 'SUNDAY WORKING (SW)', 'WORK FROM HOME (WF)']
+        subheaders = ['SL NO.', 'NAME'] + [date.strftime('%a').upper() for date in date_range] + ['P', 'HD', 'A', 'SW', 'WF']
 
         for col_num, col_data in enumerate(headers):
             sheet.write(0, col_num, col_data, header_format)
@@ -71,14 +73,22 @@ class AttendanceExcelReportController(http.Controller):
         leaves = request.env['hr.leave'].search([
             ('date_from', '<=', to_date),
             ('date_to', '>=', from_date),
-            ('state', '=', 'validate')
+            ('state', 'in', ['validate','head_approve']),
         ])
         sunday_working = []
-        leave_allocations = request.env['hr.leave.allocation'].search([('date_allocation', '<=', to_date), ('date_allocation', '>=', from_date),('state', '=', 'validate'), ('holiday_status_id.name', '=', 'Sunday working')])
+        leave_allocations = request.env['hr.leave.allocation'].search([('date_allocation', '<=', to_date), ('date_allocation', '>=', from_date),('state', 'in', ['validate','head_approve']), ('holiday_status_id.name', '=', 'Sunday Working')])
         for i in leave_allocations:
             sunday_working.append(i.date_allocation)
             print(i.date_allocation, 'allo')
         print(sunday_working, 'sunday')
+        work_from_home = []
+        leave_allocations_work = request.env['hr.leave.allocation'].search(
+            [('date_allocation', '<=', to_date), ('date_allocation', '>=', from_date),
+             ('state', 'in', ['validate','head_approve']), ('holiday_status_id.name', '=', 'Work from Home')])
+        for j in leave_allocations_work:
+            work_from_home.append(j.date_allocation)
+
+        print(work_from_home, 'wf')
         public_holidays = []
 
         # Fetch public holiday data from the calendar
@@ -107,8 +117,13 @@ class AttendanceExcelReportController(http.Controller):
             half_day_count = 0
             absent_count = 0
             sunday_working_count = 0
+            work_from_home_count = 0
 
             working_allocations = leave_allocations.filtered(
+                lambda a: a.employee_id == employee and
+                          (a.date_allocation <= to_date and a.date_allocation >= from_date)
+            )
+            work_from_home_allocations = leave_allocations_work.filtered(
                 lambda a: a.employee_id == employee and
                           (a.date_allocation <= to_date and a.date_allocation >= from_date)
             )
@@ -121,33 +136,32 @@ class AttendanceExcelReportController(http.Controller):
                 if date in public_holidays:
                     status = 'PH'  # Public Holiday
                     status_format = public_holiday_format
-                else:
-                    if date.weekday() == 6:  # Sunday
-                        status = 'A'
+
+                elif date.weekday() == 6:  # Sunday
+                    if employee in working_allocations.mapped('employee_id'):
+                        # Mark as Sunday Working if there's a working allocation
+                        status = 'SW'
+                        status_format = sw_format
+
+                    else:
+                        status = 'A'  # Absent if there's no work allocation
                         status_format = absent_format  # Use absent format for Sunday
-
-                        # Check if the employee has a "Sunday working" allocation for the current date
-                        if date in sunday_working:
-                            # Only mark this employee's status as present for this specific Sunday
-                            if employee in working_allocations.mapped('employee_id'):
-                                status = 'SW'  # Mark as present if it's a "Sunday working" date
-                                status_format = text_format
-                        # if working_allocations:
-                        #     status = 'P'  # Mark as present if there is a Sunday working allocation
-                        #     status_format = text_format
-
-                    # Check if the employee has any leave for the current date
-                    employee_leaves = leaves.filtered(
-                        lambda l: l.employee_id == employee and l.date_from.date() <= date <= l.date_to.date()
-                    )
-                    if employee_leaves:
-                        leave = employee_leaves[0]  # Get the first leave for simplicity
-                        if leave.request_unit_half:
-                            status = 'HD'  # Half-day leave
-                            status_format = half_day_format  # Use half-day format
-                        else:
-                            status = 'A'  # Full-day leave
-                            status_format = absent_format  # Use absent format
+                elif date in work_from_home:
+                    if employee in work_from_home_allocations.mapped('employee_id'):
+                        status = 'WF'  # Work from Home
+                        status_format = wf_format
+                # Check if the employee has any leave for the current date
+                employee_leaves = leaves.filtered(
+                    lambda l: l.employee_id == employee and l.date_from.date() <= date <= l.date_to.date()
+                )
+                if employee_leaves:
+                    leave = employee_leaves[0]  # Get the first leave for simplicity
+                    if leave.request_unit_half:
+                        status = 'HD'  # Half-day leave
+                        status_format = half_day_format  # Use half-day format
+                    else:
+                        status = 'A'  # Full-day leave
+                        status_format = absent_format  # Use absent format
 
                 # Increment the appropriate counter based on the status
                 if status == 'P':
@@ -158,6 +172,8 @@ class AttendanceExcelReportController(http.Controller):
                     absent_count += 1
                 elif status == 'SW':
                     sunday_working_count += 1
+                elif status == 'WF':
+                    work_from_home_count += 1
 
                 # Write status to the Excel file with the corresponding format
                 sheet.write(row, col_num, status, status_format)
@@ -167,7 +183,7 @@ class AttendanceExcelReportController(http.Controller):
             sheet.write(row, col_num + 2, half_day_count, text_format)
             sheet.write(row, col_num + 3, absent_count, text_format)
             sheet.write(row, col_num + 4, sunday_working_count, text_format)
+            sheet.write(row, col_num + 5, work_from_home_count, text_format)
 
             row += 1
-
         workbook.close()
