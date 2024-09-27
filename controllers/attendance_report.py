@@ -67,7 +67,7 @@ class AttendanceExcelReportController(http.Controller):
             sheet.write(1, col_num, col_data, header_format)
 
         # Fetch employee data
-        employees = request.env['hr.employee'].search([('active', '=', True)])  # Fetch all employees
+        employees = request.env['hr.employee'].search([('active', '=', True),('user_id.faculty_check', '=', False), ('department_id.name', '!=', 'DIRECTORS')])  # Fetch all employees
 
         # Fetch leave data for all employees within the date range
         leaves = request.env['hr.leave'].search([
@@ -119,13 +119,14 @@ class AttendanceExcelReportController(http.Controller):
             sunday_working_count = 0
             work_from_home_count = 0
 
-            working_allocations = leave_allocations.filtered(
-                lambda a: a.employee_id == employee and
-                          (a.date_allocation <= to_date and a.date_allocation >= from_date)
+            # Filter Sunday working allocations for this employee
+            employee_sunday_work_allocations = leave_allocations.filtered(
+                lambda a: a.employee_id == employee and a.holiday_status_id.name == 'Sunday Working'
             )
-            work_from_home_allocations = leave_allocations_work.filtered(
-                lambda a: a.employee_id == employee and
-                          (a.date_allocation <= to_date and a.date_allocation >= from_date)
+
+            # Filter Work From Home allocations for this employee
+            employee_work_from_home_allocations = leave_allocations_work.filtered(
+                lambda a: a.employee_id == employee and a.holiday_status_id.name == 'Work from Home'
             )
 
             for col_num, date in enumerate(date_range, start=2):
@@ -138,18 +139,20 @@ class AttendanceExcelReportController(http.Controller):
                     status_format = public_holiday_format
 
                 elif date.weekday() == 6:  # Sunday
-                    if employee in working_allocations.mapped('employee_id'):
-                        # Mark as Sunday Working if there's a working allocation
-                        status = 'SW'
+                    # Check if the employee has a valid Sunday Working allocation for this Sunday
+                    if employee_sunday_work_allocations.filtered(lambda a: a.date_allocation == date):
+                        status = 'SW'  # Mark as Sunday Working
                         status_format = sw_format
-
                     else:
-                        status = 'A'  # Absent if there's no work allocation
-                        status_format = absent_format  # Use absent format for Sunday
+                        status = 'A'  # Absent if there's no Sunday Working allocation
+                        status_format = absent_format
+
                 elif date in work_from_home:
-                    if employee in work_from_home_allocations.mapped('employee_id'):
+                    # Check if the employee has a Work From Home allocation for the current date
+                    if employee_work_from_home_allocations.filtered(lambda a: a.date_allocation == date):
                         status = 'WF'  # Work from Home
                         status_format = wf_format
+
                 # Check if the employee has any leave for the current date
                 employee_leaves = leaves.filtered(
                     lambda l: l.employee_id == employee and l.date_from.date() <= date <= l.date_to.date()
