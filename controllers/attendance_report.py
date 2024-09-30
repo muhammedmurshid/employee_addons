@@ -159,11 +159,13 @@ class AttendanceExcelReportController(http.Controller):
                 )
                 if employee_leaves:
                     leave = employee_leaves[0]  # Get the first leave for simplicity
+                    leave_type = leave.holiday_status_id.name  # Get the leave type name
+
                     if leave.request_unit_half:
                         status = 'HD'  # Half-day leave
                         status_format = half_day_format  # Use half-day format
                     else:
-                        status = 'A'  # Full-day leave
+                        status = leave_type  # Use the leave type name instead of "A"
                         status_format = absent_format  # Use absent format
 
                 # Increment the appropriate counter based on the status
@@ -171,12 +173,8 @@ class AttendanceExcelReportController(http.Controller):
                     present_count += 1
                 elif status == 'HD':
                     half_day_count += 1
-                elif status == 'A':
+                elif status != 'P' and status != 'HD':  # Check for leave type (absent with leave type name)
                     absent_count += 1
-                elif status == 'SW':
-                    sunday_working_count += 1
-                elif status == 'WF':
-                    work_from_home_count += 1
 
                 # Write status to the Excel file with the corresponding format
                 sheet.write(row, col_num, status, status_format)
