@@ -6,15 +6,26 @@ class AttendanceReport(models.Model):
     from_date = fields.Date(string='From Date', required=1)
     to_date = fields.Date(string='To Date', required=1)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=1)
+    report_type = fields.Selection([('attendance', 'Attendance'), ('leaves','Leaves')], string='Report Type')
 
     def generate_attendance_report(self):
         # Redirect to the route that generates the Excel report
-        return {
-            'type': 'ir.actions.act_url',
-            'url': '/attendance/excel_report/%s?from_date=%s&to_date=%s' % (
-                self.id, self.from_date, self.to_date),
-            'target': 'self',
-        }
+        if self.report_type == 'attendance':
+            # Redirect to the route that generates the Attendance Excel report
+            return {
+                'type': 'ir.actions.act_url',
+                'url': '/attendance/excel_report/%s?from_date=%s&to_date=%s' % (
+                    self.id, self.from_date, self.to_date),
+                'target': 'self',
+            }
+        elif self.report_type == 'leaves':
+            # Redirect to the route that generates the Leave Excel report (you would create this route similarly)
+            return {
+                'type': 'ir.actions.act_url',
+                'url': '/leave/excel_report/%s?from_date=%s&to_date=%s' % (
+                    self.id, self.from_date, self.to_date),
+                'target': 'self',
+            }
 
     def get_report_lines(self):
         invoice_list = []

@@ -16,7 +16,7 @@ class LeaveReportPivotCustom(models.Model):
     def action_duplicate_accounts(self):
 
         current_year = datetime.now().year
-        print(current_year, 'year')
+        print(current_year, 'yearlo')
         employees = self.env['hr.employee'].search([], order='id asc')
         leave_types = self.env['hr.leave.type'].search([], order='id asc')
         print(current_year, 'year')

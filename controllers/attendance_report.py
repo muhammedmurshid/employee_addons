@@ -18,22 +18,38 @@ class AttendanceExcelReportController(http.Controller):
         company_id = report_id.company_id.id
         print(company_id, 'kom')
         # Prepare the response to download the file
-        response = request.make_response(
-            None,
-            headers=[
-                ('Content-Type', 'application/vnd.ms-excel'),
-                ('Content-Disposition', 'attachment; filename="Attendance_report.xlsx"')
-            ]
-        )
+        if report_id.report_type == 'attendance':
+            # Prepare the response to download the file if the report type is 'attendance'
+            response = request.make_response(
+                None,
+                headers=[
+                    ('Content-Type', 'application/vnd.ms-excel'),
+                    ('Content-Disposition', 'attachment; filename="Attendance_report.xlsx"')
+                ]
+            )
+
+            # Create an in-memory output stream
+            output = io.BytesIO()
+            self.generate_attendance_report(output, from_date, to_date, company_id)
+
+            output.seek(0)
+            response.stream.write(output.read())
+            output.close()
+            return response
+
+        else:
+            # If the report type is not 'attendance', return a different response or no file
+            return request.render('some_template',
+                                  {'message': 'No attendance report to generate for this report type.'})
 
         # Create an in-memory output stream
-        output = io.BytesIO()
-        self.generate_attendance_report(output, from_date, to_date, company_id)
-
-        output.seek(0)
-        response.stream.write(output.read())
-        output.close()
-        return response
+        # output = io.BytesIO()
+        # self.generate_attendance_report(output, from_date, to_date, company_id)
+        #
+        # output.seek(0)
+        # response.stream.write(output.read())
+        # output.close()
+        # return response
 
     def generate_attendance_report(self, output, from_date, to_date, company_id):
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})

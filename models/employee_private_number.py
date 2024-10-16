@@ -114,3 +114,52 @@ class MonthOfBirthAddServerAction(models.Model):
                 else:
                     print("incorrect month")
 
+    def send_birthday_reminder(self):
+        # Get today's date
+        today = datetime.today()
+        print(today.month, today.day, 'today')
+
+        # Find employees whose date of birth is today
+        employees_with_birthday = self.search([
+            ('birthday', '!=', False),  # Ensure birthday is set
+            ('active', '=', True)  # Only active employees
+        ])
+
+        # Collect employees whose birthday is today
+        birthday_employees = self.env['hr.employee']  # Initialize an empty recordset
+
+        for employee in employees_with_birthday:
+            print(employee.birthday.day, employee.birthday.month, 'pp')
+            if employee.birthday.month == today.month and employee.birthday.day == today.day:
+                print(employee.name, 'emp')
+                birthday_employees |= employee  # Add employee to the recordset
+
+        print(birthday_employees, 'employees')
+
+        if birthday_employees:
+            # Get the HR manager (assuming there is one HR manager user)
+            hr_manager = self.env['hr.department'].search([('name', '=', 'HR')], limit=1).manager_id
+            if hr_manager:
+                # Prepare the email content with employee names
+                employee_names = ', '.join(birthday_employees.mapped('name'))
+
+                # Prepare mail values
+                mail_values = {
+                    'subject': 'Employee Birthday Reminder',
+                    'body_html': f'''
+                        <p>Dear {hr_manager.name},</p>
+                        <p>The following employees have birthdays today:</p>
+                        <ul>{"".join([f"<li>{employee.name}</li>" for employee in birthday_employees])}</ul>
+                        <p>Best regards,<br/>Your HR System</p>
+                    ''',
+                    'email_to': hr_manager.work_email,
+                }
+                
+                print(hr_manager.work_email, 'mail')
+
+                # Create and send the email
+                self.env['mail.mail'].create(mail_values).send()
+            else:
+                print("No HR manager found.")
+        else:
+            print("No employees with birthdays today.")
