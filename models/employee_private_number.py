@@ -154,7 +154,7 @@ class MonthOfBirthAddServerAction(models.Model):
                     ''',
                     'email_to': hr_manager.work_email,
                 }
-                
+
                 print(hr_manager.work_email, 'mail')
 
                 # Create and send the email
